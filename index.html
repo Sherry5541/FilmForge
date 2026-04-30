@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>FilmForge</title>
+
+        <link rel="stylesheet" href="style.css">
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+
+    <body>
+
+        <div id="trailer-modal">
+            <div class="modal-content">
+                <span id="trailer-close">&times;</span>
+
+                <iframe id="trailer-frame"
+                    allow="autoplay; encrypted-media"
+                    allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <div class="background-overlay"></div>
+        <nav class="navbar">
+            <div class="left-side">
+                <h1>FilmForge</h1>
+            </div>
+
+            <div class="right-side">
+                <button class="history" onclick="myHistory()">History</button>
+                <button class="about" onclick="myAbout()">About</button>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="introduction">
+                <div class="title">
+                    <h2>Movie Night Starts Here</h2>
+                </div>
+
+                <div class="subtitle">
+                    <h3>Sit back, relax, and let the films come to you.</h3>
+                </div>
+
+                <button class="generate" onclick="myGenerate()">Lights, Camera, Generate!</button>
+            </div>
+
+            <div class="filters-section">
+                <div class="release-year-filter">
+                    <h3>Release Year</h3>
+                    <input type="range" id="release-year" name="release-year" min="1900" max="2024" value="2020" step="1">
+                    <span id="release-year-value">2020</span>
+                </div>
+
+                <div class="genre-filter">
+                    <h3>Genre</h3>
+                    <select id="genre" name="genre">
+                        <option value="any">🎲Any</option>
+                        <option value="action">💥Action</option>
+                        <option value="comedy">😂Comedy</option>
+                        <option value="drama">🎭Drama</option>
+                        <option value="horror">👻Horror</option>
+                        <option value="sci-fi">🚀Sci-Fi</option>
+                        <option value="romance">❤️Romance</option>
+                        <option value="documentary">📚Documentary</option>
+                        <option value="thriller">🔪Thriller</option>
+                        <option value="animation">🎨Animation</option>
+                        <option value="fantasy">🧙Fantasy</option>
+                        <option value="mystery">🕵️Mystery</option>
+                        <option value="adventure">🗺️Adventure</option>
+                        <option value="crime">🚓Crime</option>
+                        <option value="biography">👤Biography</option>
+                        <option value="family">👪Family</option>
+                    </select>
+                </div>
+
+                <div class="rating-filter">
+                    <h3>Minimum Rating</h3>
+                    <input type="range" id="rating" name="rating" min="0" max="10" value="5" step="0.1">
+                    <span id="rating-value">5.0</span>
+                </div>
+            </div>
+
+            <div class="movie-suggestion-section">
+                <h2>Suggested Movie</h2>
+                <div class="movie-card" id="movie-card">
+                    <img id="movie-poster" src="" alt="Movie Poster">
+
+                    <h3 id="movie-title">Movie Title</h3>
+                    <p id="movie-details">Release Year: XXXX | Genre: XXXX | Rating: X.X</p>
+                    <p id="movie-description">Movie description will appear here.</p>
+                </div>
+            </div>
+
+            <div class="history-section" id="history-section">
+                <h2>History</h2>
+                <ul id="history-list">
+                    <!-- History items will be appended here -->
+                </ul>
+            </div>
+        </main>
+
+        <div class="section-footer" id="section-footer">
+            <div class="contact">
+                <p>Contact us about improvements at <a href="mailto:support@filmforge.com">support@filmforge.com</a></p>
+            </div>
+
+            <div class="info">
+                <p>FilmForge is your go-to platform for discovering and enjoying movies tailored to your taste.</p>
+            </div>
+
+            <div class="copyright">
+                <p>© 2025 FilmForge. All rights reserved.</p>
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>
