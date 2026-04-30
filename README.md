@@ -22,6 +22,14 @@ FilmForge is a single-page web application that generates film recommendations b
 
 ## 📸 Screenshots
 
+### Home Page
+![Home](HomePage.png)
+
+### Movie Result
+![Movie](MovieResult.png)
+
+### History Section
+![History](History.png)
 
 ## 📚 Project Purpose
 Developed as part of COMP1004 coursework.
