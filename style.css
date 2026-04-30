@@ -342,6 +342,21 @@ main {
     color: #fff;
 }
 
+.history-btn {
+    margin: 5px;
+    padding: 10px 15px;
+    background-color: #e50914;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.history-btn:hover {
+    background-color: #b20710;
+}
+
 /* ======= BEAUTIFUL FOOTER ======= */
 .section-footer {
     width: 100%;

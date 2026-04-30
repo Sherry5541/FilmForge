@@ -1,5 +1,6 @@
 // ========= CONFIG =========
 const API_KEY = "3d60cc65653e0dd1105b5f7aa285b0c4";
+let movieHistory = [];
 const BASE_URL = "https://api.themoviedb.org/3";
 
 let currentMovie = null; // Currently displayed movie
@@ -93,15 +94,25 @@ async function myGenerate() {
 // ========= LOAD TRAILER =========
 async function loadTrailer(movieId) {
     try {
-        const url = `${BASE_URL}/movie/${movieId}/videos?api_key=${API_KEY}&language=en-US`;
+        const url = `${BASE_URL}/movie/${movieId}/videos?api_key=${API_KEY}`;
         const response = await fetch(url);
         const data = await response.json();
 
-        const trailer = data.results.find(
-            v => v.type === "Trailer" && v.site === "YouTube"
+        // Ищем лучший трейлер
+        const trailer = data.results.find(v =>
+            v.type === "Trailer" &&
+            v.site === "YouTube" &&
+            v.official === true
         );
 
-        return trailer ? trailer.key : null;
+        if (trailer) {
+            return trailer.key;
+        }
+
+        // fallback: любой YouTube трейлер
+        const anyVideo = data.results.find(v => v.site === "YouTube");
+
+        return anyVideo ? anyVideo.key : null;
 
     } catch (err) {
         console.error(err);
@@ -109,37 +120,19 @@ async function loadTrailer(movieId) {
     }
 }
 
-// ========= MODAL CONTROL =========
-function openTrailer(key) {
-    const modal = document.getElementById("trailer-modal");
-    const frame = document.getElementById("trailer-frame");
-
-    frame.src = `https://www.youtube.com/embed/${key}?autoplay=1`;
-    modal.style.display = "flex";
-}
-
-function closeTrailer() {
-    const modal = document.getElementById("trailer-modal");
-    const frame = document.getElementById("trailer-frame");
-
-    frame.src = ""; // stop the video
-    modal.style.display = "none";
-}
-
-document.getElementById("trailer-close").onclick = closeTrailer;
-
-document.getElementById("trailer-modal").onclick = (event) => {
-    if (event.target.id === "trailer-modal") closeTrailer();
-};
-
 // ========= CLICK ON MOVIE CARD =========
 document.getElementById("movie-card").onclick = async () => {
     if (!currentMovie) return;
 
     const trailerKey = await loadTrailer(currentMovie.id);
 
-    if (trailerKey) openTrailer(trailerKey);
-    else alert("Trailer not found 😕");
+    if (trailerKey) {
+        // открываем YouTube напрямую (без iframe)
+        window.open(`https://www.youtube.com/watch?v=${trailerKey}`, "_blank");
+    } else {
+        // fallback — поиск
+        window.open(`https://www.youtube.com/results?search_query=${currentMovie.title} trailer`, "_blank");
+    }
 };
 
 // ========= DISPLAY MOVIE =========
@@ -170,34 +163,58 @@ function showMovieError(msg) {
 // ========= HISTORY =========
 function saveToHistory(movie) {
     const historyList = document.getElementById("history-list");
-    const li = document.createElement("li");
 
     const text = `${movie.title} (${movie.release_date?.slice(0, 4)}) — ⭐ ${movie.vote_average}`;
+
+    movieHistory.unshift(text);
+
+    localStorage.setItem("movieHistory", JSON.stringify(movieHistory));
+
+    const li = document.createElement("li");
     li.textContent = text;
-
     historyList.prepend(li);
-
-    // === SAVE TO LOCAL STORAGE ===
-    let history = JSON.parse(localStorage.getItem("movieHistory")) || [];
-    history.unshift(text);
-    localStorage.setItem("movieHistory", JSON.stringify(history));
 }
 
-// === LOAD HISTORY FROM LOCAL STORAGE ===
+// ========= LOAD HISTORY ON PAGE LOAD =========
 window.addEventListener("DOMContentLoaded", () => {
-    const history = JSON.parse(localStorage.getItem("movieHistory")) || [];
+    const saved = JSON.parse(localStorage.getItem("movieHistory")) || [];
+
+    movieHistory = saved;
+
     const historyList = document.getElementById("history-list");
 
-    if (history.length > 0) {
-        document.getElementById("history-section").style.display = "block";
+    saved.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        historyList.appendChild(li);
+    });
 
-        history.forEach(item => {
-            const li = document.createElement("li");
-            li.textContent = item;
-            historyList.appendChild(li);
-        });
+    if (saved.length > 0) {
+        document.getElementById("history-section").style.display = "block";
     }
 });
+
+// ========= СLEAR HISTORY & DOWNLOAD HISTORY =========
+function clearHistory() {
+    movieHistory = [];
+    localStorage.removeItem("movieHistory");
+    document.getElementById("history-list").innerHTML = "";
+}
+
+function downloadHistory() {
+    const json = JSON.stringify(movieHistory, null, 2);
+
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "movieHistory.json";
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+
 
 // ========= HELPERS =========
 function mapGenreToTMDB(g) {
