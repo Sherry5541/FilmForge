@@ -1,5 +1,5 @@
 // ========= CONFIG =========
-const API_KEY = "YOUR_TMDB_API_KEY";
+const API_KEY = TMDB_API_KEY;
 let movieHistory = [];
 const BASE_URL = "https://api.themoviedb.org/3";
 
